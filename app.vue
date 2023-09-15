@@ -6,16 +6,8 @@
         Сообщение: <span>{{ errorMessage }}</span>
     </div>
   <div class="flex gap-4">
-    <div>
-        <h2>Компании</h2>
-        <ul class="max-h-[90vh] overflow-y">
-            <li v-for="stock in Object.values(stocks)">
-                {{ stock.id }} {{ stock.ticker }}
-            </li>
-        </ul>
-    </div>
 
-      <div>
+      <div class="w-1/5">
           <h2>Акции</h2>
           <ul class="max-h-[90vh] overflow-auto">
               <li v-for="asset in balance.assets?.filter(i => i.quantity)">
@@ -24,18 +16,11 @@
           </ul>
       </div>
 
-      <SellStocksComponent @request="request" />
+      <SellStocksComponent class="w-1/5" @request="request" />
 
-      <BuyStockComponent @request="request" />
+      <BuyStockComponent :assets="balance.assets" @request="request" class="w-1/5" />
+      <NewsComponent class="w-1/5" />
 
-      <div>
-          <h2>Новости</h2>
-          <ul class="max-h-[90vh] overflow-auto">
-              <li v-for="article in news">
-                  {{ article.text }} {{ article.rate }}%
-              </li>
-          </ul>
-      </div>
   </div>
 </template>
 
@@ -44,7 +29,6 @@
   const errorMessage = ref('');
   const stocks = ref([])
   const balance = ref(0);
-  const news = ref([]);
   const token = '64f071177c48764f071177c48a';
   const baseUrl = 'https://datsorange.devteam.games'
   onMounted(async () => {
@@ -64,13 +48,6 @@
 
       await fetchBalance();
 
-      await $fetch(baseUrl + '/news/LatestNews', {
-          headers: {
-              'token': token,
-          }
-      }).then((res) => {
-          news.value = res;
-      })
   })
 
   const request = (url, data) => {
@@ -82,8 +59,10 @@
           body: data
       }).then(res => {
           errorMessage.value = res.message;
-          if (res.message === 'Ok') {
-              fetchBalance();
+          if (res?.length && res[0].message === 'Ok') {
+              setTimeout(() => {
+                  fetchBalance();
+              }, 1000)
           }
       })
   }

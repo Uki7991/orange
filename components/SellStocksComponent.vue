@@ -13,13 +13,6 @@
 const sellStocks = ref([]);
 const token = '64f071177c48764f071177c48a';
 const baseUrl = 'https://datsorange.devteam.games'
-const props = {
-    request: {
-        type: Function,
-        required: true,
-    }
-};
-const {request} = props;
 
 onMounted(() => {
     setInterval(() => {

@@ -14,29 +14,33 @@ const buyStocks = ref([]);
 const token = '64f071177c48764f071177c48a';
 const baseUrl = 'https://datsorange.devteam.games'
 
-const props = {
-    request: {
-        type: Function,
-        required: true,
+const props = defineProps({
+    assets: {
+        type: Array,
     }
-};
-const {request} = props;
+});
+const {assets} = props;
 
 onMounted(() => {
+    const assetIds = assets?.map(i => i.id);
     setInterval(() => {
         $fetch(baseUrl + '/buyStock', {
             headers: {
                 'token': token,
             }
         }).then((res) => {
-            buyStocks.value = res.filter(i => i.bids.length)
+            buyStocks.value = res.filter(i => i.bids.length && assetIds?.includes(i.id))
                 .sort((a, b) => {
-                    a.bids.sort((a, b) => a.price - b.price);
-                    b.bids.sort((a, b) => a.price - b.price);
-                    return a.bids[0].price - b.bids[0].price
+                    a.bids.sort((a, b) => b.price - a.price);
+                    b.bids.sort((a, b) => b.price - a.price);
+                    return b.bids[0].price - a.bids[0].price
                 });
         })
     }, 5000)
+})
+
+watch(buyStocks, (value) => {
+    console.log(value)
 })
 
 const emit = defineEmits(['request'])
