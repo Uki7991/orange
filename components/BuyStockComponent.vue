@@ -29,7 +29,7 @@ onMounted(() => {
                 'token': token,
             }
         }).then((res) => {
-            buyStocks.value = res.filter(i => i.bids.length && assetIds?.includes(i.id))
+            buyStocks.value = res.filter(i => i.bids.length)
                 .sort((a, b) => {
                     a.bids.sort((a, b) => b.price - a.price);
                     b.bids.sort((a, b) => b.price - a.price);
@@ -37,10 +37,6 @@ onMounted(() => {
                 });
         })
     }, 5000)
-})
-
-watch(buyStocks, (value) => {
-    console.log(value)
 })
 
 const emit = defineEmits(['request'])

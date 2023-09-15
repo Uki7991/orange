@@ -8,4 +8,16 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  modules: [
+    // pinia plugin
+    '@pinia/nuxt',
+  ],
+
+  imports: {
+    dirs: ['./stores'],
+  },
+
+  pinia: {
+    autoImports: ['defineStore', 'acceptHMRUpdate'],
+  },
 })
